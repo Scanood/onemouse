@@ -19,6 +19,11 @@
     <img src="assets/interface.png" />
 </div>
 
+
+https://github.com/user-attachments/assets/5722ff76-48a6-4efa-97da-d36539c7e1a5
+
+
+
 ## 🍉Installation
 
 1. 下载源代码：
