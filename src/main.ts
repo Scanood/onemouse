@@ -2,6 +2,7 @@ import { app, BrowserWindow, Menu } from 'electron';
 import path from 'path';
 import { InitProcess } from './mainprocess/connection/process'
 import { InitEvent } from './mainprocess/control/event'
+import { SetupTray } from './mainprocess/app/tray'
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
   app.quit();
@@ -34,8 +35,12 @@ const createWindow = () => {
   if (process.env.NODE_ENV === 'development') {
     mainWindow.webContents.openDevTools();
   }
+  mainWindow.on('minimize', () => {
+    mainWindow.hide()
+  })
   InitProcess(mainWindow)
   InitEvent(mainWindow)
+  SetupTray(mainWindow)
 };
 
 // This method will be called when Electron has finished
