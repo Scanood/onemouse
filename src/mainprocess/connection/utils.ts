@@ -4,6 +4,7 @@ import path from 'path'
 function getLocalIP() {
     const nets = os.networkInterfaces()
     for (const name of Object.keys(nets)) {
+        if (name.startsWith('VMware')) continue
         for (const net of nets[name]) {
             if (net.family == 'IPv4' && !net.internal)
                 return net.address
