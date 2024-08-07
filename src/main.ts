@@ -2,7 +2,7 @@ import { app, BrowserWindow, Menu } from 'electron';
 import path from 'path';
 import { InitProcess } from './mainprocess/connection/process'
 import { InitEvent } from './mainprocess/control/event'
-import { SetupTray } from './mainprocess/app/tray'
+import { SetupTray, unmountedTray } from './mainprocess/app/tray'
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
   app.quit();
@@ -21,7 +21,7 @@ const createWindow = () => {
     },
   });
 
-  mainWindow.resizable = false
+  mainWindow.maximizable = false
   // and load the index.html of the app.
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
@@ -35,8 +35,9 @@ const createWindow = () => {
   if (process.env.NODE_ENV === 'development') {
     mainWindow.webContents.openDevTools();
   }
-  mainWindow.on('minimize', () => {
+  mainWindow.on('minimize', (e: Event) => {
     mainWindow.hide()
+    e.preventDefault()
   })
   InitProcess(mainWindow)
   InitEvent(mainWindow)
@@ -52,6 +53,7 @@ app.on('ready', createWindow);
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
+    unmountedTray()
     app.quit();
   }
 });
