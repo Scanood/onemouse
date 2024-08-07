@@ -13,15 +13,8 @@
 
         <div>
             <div id="options" class="options">
-                <label for="options">帧率：</label>
-                <div class="options-item-item">
-                    <RadioButton v-model="frameRate" inputId="30rate" value="30" />
-                    <label for="30rate" class="options-item-label">30fps</label>
-                </div>
-                <div class="options-item-item">
-                    <RadioButton v-model="frameRate" inputId="60rate" value="60" />
-                    <label for="60rate" class="options-item-label">60fps</label>
-                </div>
+                <label for="options" style="margin-right: 1em;">帧率：</label>
+                <SelectButton v-model="frameRate" :options="['30', '60']" aria-labelledby="basic" :allow-empty="false" />
             </div>
         </div>
     </div>
@@ -30,7 +23,7 @@
 import Checkbox from 'primevue/checkbox';
 import InputNumber from 'primevue/inputnumber';
 import { useSettingStore } from '../store/setting'
-import RadioButton from 'primevue/radiobutton';
+import SelectButton from 'primevue/selectbutton';
 import { storeToRefs } from 'pinia'
 const store = useSettingStore()
 const { startup, port, frameRate } = storeToRefs(store)
@@ -42,7 +35,7 @@ function AutoStart(start) {
 <style scoped>
 .setting {
     display: grid;
-    row-gap: 1em;
+    row-gap: 2em;
     grid-template-columns: 1fr 1fr;
     margin: auto;
     margin-top: 2em;
@@ -54,12 +47,6 @@ function AutoStart(start) {
 
 .options {
     display: flex;
-}
-
-.options-item-label {
-    margin-left: 0.5em;
-}
-.options-item-item{
-    margin-left: 1em;
+    align-items: center;
 }
 </style>

@@ -73,7 +73,7 @@ async function CatchDesktopVideo(data: ScreenData) {
                     mandatory: {
                         chromeMediaSource: 'desktop',
                         chromeMediaSourceId: sourceId,
-                        maxFrameRate: frameRate.value
+                        maxFrameRate: Number.parseInt(frameRate.value)
                     }
                 }
             })
