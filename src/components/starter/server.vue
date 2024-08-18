@@ -32,7 +32,7 @@ const store = usePeerStore()
 import { storeToRefs } from 'pinia'
 import { useSettingStore } from '../../store/setting'
 const settingStore = useSettingStore()
-const { port, startup, connectPassword, frameRate } = storeToRefs(settingStore)
+const { port, startup, connectPassword } = storeToRefs(settingStore)
 let send: RTCRtpSender = undefined
 let streams: MediaStream = undefined
 
@@ -64,6 +64,8 @@ async function CatchDesktopVideo(data: ScreenData) {
         send = undefined
         return
     }
+    const { frameRate } = data
+    if (frameRate) settingStore.updateFrameRate(frameRate)
     if (ServerVideoPeer.value && sourceId) {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({
@@ -73,7 +75,7 @@ async function CatchDesktopVideo(data: ScreenData) {
                     mandatory: {
                         chromeMediaSource: 'desktop',
                         chromeMediaSourceId: sourceId,
-                        maxFrameRate: Number.parseInt(frameRate.value)
+                        maxFrameRate: Number.parseInt(settingStore.frameRate)
                     }
                 }
             })

@@ -17,7 +17,8 @@ interface MouseEventData {
 }
 
 interface ScreenData {
-    open: boolean
+    open: boolean,
+    frameRate: string
 }
 
 interface KeyBoardData {

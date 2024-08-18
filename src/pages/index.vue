@@ -15,8 +15,10 @@ import { WorkMode } from '../components/mode/type'
 import { EventType, ActionType, ActionKey, KeyBoardEventType } from '../components/controller/type'
 import Controller from '../components/controller/index.vue'
 import { taskManger } from '../utils/task'
+import { useSettingStore } from '../store/setting'
 const { mode, setMode } = useMode()
 const { status, SetStatus } = useStarter()
+const settingStore = useSettingStore()
 import { ref, watch, onMounted } from 'vue'
 let channel: RTCDataChannel
 // viceWindow ID
@@ -64,7 +66,7 @@ function RunTask(eventType: string, collect: boolean) {
     switch (eventType) {
         case EventType.MOUSE: mountedMouseEvent(collect); break;
         case EventType.KEYBOARD: mountedKeyBoardEvent(collect); break;
-        case EventType.SCREEN: if (channel) channel.send(JSON.stringify({ type: eventType, data: { open: collect } })); break
+        case EventType.SCREEN: if (channel) channel.send(JSON.stringify({ type: eventType, data: { open: collect, frameRate: settingStore.frameRate } })); break
     }
 }
 
