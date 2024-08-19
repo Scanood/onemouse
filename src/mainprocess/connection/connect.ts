@@ -51,9 +51,9 @@ function ClientVideoConnect(host_name: string, port: number, password: number) {
 }
 
 function CloseSocketIO() {
-    if (window.socket) {
-        window.socket.disconnect()
-        const store = usePeerStore()
+    const store = usePeerStore()
+    if (store.ClientSocket) {
+        store.updateClientSocket(undefined)
         store.ClientPeer?.close()
         console.log('Client socket io closed!');
     }
