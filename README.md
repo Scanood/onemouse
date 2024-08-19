@@ -13,7 +13,6 @@
 ## 🍍Introduction
 一个内网远程控制工具，对鼠标、键盘和屏幕可以分别选择是否控制。
 
-详细介绍：https://juejin.cn/post/7382897150047109158
 ## 🍓Software Interface
 <div align="center">
     <img src="assets/interface.png" />
