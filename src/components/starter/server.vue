@@ -23,16 +23,18 @@ import { EventType } from '../controller/type'
 import { StartStatus, RTCdata, MouseData, ScreenData, MouseEventData, KeyBoardData } from './types'
 import { WorkMode } from '../mode/type'
 import { ServerConnect, CloseSocketIO, ServerVideoConnect } from '../../mainprocess/connection/connect'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { usePeerStore } from '../../store/index'
+import { storeToRefs } from 'pinia'
+import { useSettingStore } from '../../store/setting'
+
 const props = defineProps(['mode', 'status', 'SetStatus', 'toast'])
 const connectLink = ref("")
 const manualIP = ref(false)
 const store = usePeerStore()
-import { storeToRefs } from 'pinia'
-import { useSettingStore } from '../../store/setting'
 const settingStore = useSettingStore()
 const { port, startup, connectPassword } = storeToRefs(settingStore)
+const { ServerVideoPeer } = storeToRefs(store)
 let send: RTCRtpSender = undefined
 let streams: MediaStream = undefined
 
@@ -51,9 +53,8 @@ onMounted(async () => {
 async function CatchDesktopVideo(data: ScreenData) {
     const open = data.open
     const sourceId = await window.oneMouse.GetDeskTopId()
-    const { ServerVideoPeer } = storeToRefs(store)
     if (!ServerVideoPeer.value) {
-        ServerVideoConnect(`http://${connectLink.value}`, port.value, connectPassword.value)
+        ServerVideoConnect(`http://${connectLink.value}`, port.value, connectPassword.value, onmessage)
     }
     if (!open && send) {
         ServerVideoPeer.value.removeTrack(send)
@@ -65,6 +66,8 @@ async function CatchDesktopVideo(data: ScreenData) {
         return
     }
     const { frameRate } = data
+    console.log("------", frameRate);
+
     if (frameRate) settingStore.updateFrameRate(frameRate)
     if (ServerVideoPeer.value && sourceId) {
         try {
@@ -103,6 +106,7 @@ function onmessage(event: MessageEvent<any>) {
 async function ServerStart(port: number, password: number) {
     await window.oneMouse.StartServer(port, password)
     ServerConnect(`http://${connectLink.value}`, port, password, onmessage)
+    ServerVideoConnect(`http://${connectLink.value}`, port, password, onmessage)
 }
 
 function Start() {
@@ -121,6 +125,14 @@ function onServerPortinUse() {
     Stop()
     props.toast.add({ severity: 'warn', summary: '系统提示', detail: '当前端口被占用！', life: 2000 })
 }
+
+// 确保服务端始终拥有ServerVideoPeer
+watch(ServerVideoPeer, (newpeer, oldpeer) => {
+    if (newpeer === undefined) {
+        console.log(`watch create new videoPeer`);
+        ServerVideoConnect(`http://${connectLink.value}`, port.value, connectPassword.value, onmessage)
+    }
+})
 
 </script>
 

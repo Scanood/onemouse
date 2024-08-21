@@ -1,6 +1,6 @@
 // See the Electron documentation for details on how to use preload scripts:
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
-import { EventType, ActionKey, ActionType, KeyBoardEventType } from './components/controller/type'
+import { EventType, ActionKey, ActionType } from './components/controller/type'
 import { MouseData, MouseEventData, KeyBoardData } from './components/starter/types'
 
 import { contextBridge, ipcRenderer } from 'electron'
@@ -42,15 +42,13 @@ const mapping = {
   // 执行鼠标点击事件
   MouseEventAction: (data: MouseEventData) => ipcRenderer.send('mouse-event', data),
 
-  // 渲染进程到主进程接受键盘事件
-  GetKeyboardEvent: (eventType: KeyBoardEventType, code: string) => {
-    ipcRenderer.send('get-keyboard', eventType, code)
-  },
+  // 客户端是否发送键盘事件
+  KeyBoardCollect: (collect: boolean) => ipcRenderer.send('keyboard-collect', collect),
 
-  // 渲染进程提供RTC发送键盘事件
-  RTCSendKeyBoardEvent: (callback: (eventType: KeyBoardEventType, code: string) => void) => {
-    ipcRenderer.removeAllListeners(EventType.KEYBOARD);
-    ipcRenderer.on(EventType.KEYBOARD, (event, eventType, code) => callback(eventType, code))
+  // 键盘是否监听
+  onKeyBaordCollect: (cb: (args: boolean) => void) => {
+    ipcRenderer.removeAllListeners(EventType.KEYBOARD)
+    ipcRenderer.on(EventType.KEYBOARD, (_, collect) => cb(collect))
   },
 
   // 执行键盘输入事件

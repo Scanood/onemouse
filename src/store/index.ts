@@ -8,7 +8,7 @@ const usePeerStore = defineStore('peer', () => {
     const ServerVideoPeer = ref<RTCPeerConnection>(undefined)
     const ClientVideoPeer = ref<RTCPeerConnection>(undefined)
     // client socket
-    const ClientSocket = ref<Socket>()
+    const ClientSocket = ref<Array<Socket>>([])
 
 
     function updateServerPeer(newPeer: RTCPeerConnection | undefined) {
@@ -32,8 +32,12 @@ const usePeerStore = defineStore('peer', () => {
     }
 
     function updateClientSocket(socket: Socket | undefined) {
-        if (ClientSocket.value) ClientSocket.value.disconnect()
-        ClientSocket.value = socket
+        if (!socket) {
+            ClientSocket.value.forEach((s) => (s && s.disconnect()))
+            ClientSocket.value.length = 0
+            return
+        }
+        ClientSocket.value.push(socket)
     }
 
     return {

@@ -2,8 +2,11 @@ import { KeyBoardEventType, EventType } from './type'
 import { BrowserWindow } from "electron"
 import { keyboard } from '@scanood/nut-js'
 import { keymap } from './keymap'
-function getKeyBoardEvent(mainWin: BrowserWindow, eventType: KeyBoardEventType, code: string) {
-    mainWin.webContents.send(EventType.KEYBOARD, eventType, code)
+function KeyBoardCollect(mainWin: BrowserWindow, collect: boolean) {
+    BrowserWindow.getAllWindows().filter((win) => win != mainWin).map((win) => {
+        win.webContents.send(EventType.KEYBOARD, collect)
+    })
+
 }
 
 async function actionKeyBaordEvent(eventType: KeyBoardEventType, code: string) {
@@ -14,6 +17,6 @@ async function actionKeyBaordEvent(eventType: KeyBoardEventType, code: string) {
 }
 
 export {
-    getKeyBoardEvent,
+    KeyBoardCollect,
     actionKeyBaordEvent
 }

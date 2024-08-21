@@ -7,12 +7,12 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { ClientVideoConnect } from '../mainprocess/connection/connect'
-import { ActionType, ActionKey, KeyBoardEventType } from '../components/controller/type'
+import { ActionType, ActionKey, KeyBoardEventType, EventType } from '../components/controller/type'
 import { useRoute } from 'vue-router'
 const route = useRoute()
 const video = ref<HTMLVideoElement>(undefined)
-
-
+let dataChannel: RTCDataChannel = undefined
+const collectKeyBoard = ref<Boolean>(false)
 onMounted(() => {
     video.value.addEventListener('wheel', (event: WheelEvent) => {
         // 向下滚动
@@ -22,20 +22,22 @@ onMounted(() => {
     })
 
     video.value.addEventListener('keydown', (e: KeyboardEvent) => {
-        window.oneMouse.GetKeyboardEvent(KeyBoardEventType.KEYDOWN, e.code)
+        sendKeyBoardEvent(KeyBoardEventType.KEYDOWN, e.code)
     })
 
     video.value.addEventListener('keyup', (e: KeyboardEvent) => {
-        window.oneMouse.GetKeyboardEvent(KeyBoardEventType.KEYUP, e.code)
+        sendKeyBoardEvent(KeyBoardEventType.KEYUP, e.code)
     })
     const host_name = route.query.host
     const port = Number(route.query.port)
     const password = Number(route.query.password)
-
-    setTimeout(() => {
-        const rtc = ClientVideoConnect(`http://${host_name}`, port, password)
-        rtc.ontrack = ontrack
-    }, 500)
+    window.oneMouse.onKeyBaordCollect(setCollectKeyboard)
+    const { channel, peer } = ClientVideoConnect(`http://${host_name}`, port, password)
+    peer.ontrack = ontrack
+    dataChannel = channel
+    channel.onopen = function () {
+        console.log('keyboard data channel open success!');
+    }
 })
 
 function ontrack(ev: RTCTrackEvent) {
@@ -53,6 +55,16 @@ function mouseup(e: MouseEvent) {
     window.oneMouse.GetMouseEvent(ActionType.RELEASE, e.button)
 }
 
+function sendKeyBoardEvent(eventType: KeyBoardEventType, code: string) {
+    if (collectKeyBoard.value) {
+        dataChannel && dataChannel.send(JSON.stringify({ type: EventType.KEYBOARD, data: { eventType, code } }))
+    }
+}
+
+function setCollectKeyboard(value: boolean) {
+    collectKeyBoard.value = value
+    console.log(`::setCollectKeyboard`, value, collectKeyBoard.value);
+}
 
 </script>
 

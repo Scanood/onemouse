@@ -1,7 +1,7 @@
 import { app, ipcMain, BrowserWindow } from 'electron'
 import { CollectMousePosition, mouseAction, sendMouseAction, MouseEventAction } from './mouse'
 import { CatchDeskTopSourceId } from './screen'
-import { getKeyBoardEvent, actionKeyBaordEvent } from './keyboard'
+import { KeyBoardCollect, actionKeyBaordEvent } from './keyboard'
 import { AutoLaunch } from './startup'
 function InitEvent(mainWin: BrowserWindow) {
     app.whenReady().then(() => {
@@ -21,8 +21,8 @@ function InitEvent(mainWin: BrowserWindow) {
             MouseEventAction(actionType, actionKey)
         })
 
-        ipcMain.on('get-keyboard', (event, eventType, code) => {
-            getKeyBoardEvent(mainWin, eventType, code)
+        ipcMain.on('keyboard-collect', (event, collect) => {
+            KeyBoardCollect(mainWin, collect)
         })
 
         ipcMain.on('keyboard-event', (event, { eventType, code }) => {

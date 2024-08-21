@@ -12,7 +12,7 @@ import Starter from '../components/starter/index.vue'
 import useStarter from '../components/starter/useStarter';
 import { StartStatus } from '../components/starter/types';
 import { WorkMode } from '../components/mode/type'
-import { EventType, ActionType, ActionKey, KeyBoardEventType } from '../components/controller/type'
+import { EventType, ActionType, ActionKey } from '../components/controller/type'
 import Controller from '../components/controller/index.vue'
 import { taskManger } from '../utils/task'
 import { useSettingStore } from '../store/setting'
@@ -51,14 +51,9 @@ function mountedMouseEvent(collect: boolean) {
     else window.oneMouse.RTCSendMouseEvent(notSendMouseEvent)
 }
 
-// 挂载键盘事件
+// 挂载键盘事件 渲染进程1-主进程-渲染进程2
 function mountedKeyBoardEvent(collect: boolean) {
-    function sendKeyBoardEvent(eventType: KeyBoardEventType, code: string) {
-        channel.send(JSON.stringify({ type: EventType.KEYBOARD, data: { eventType, code } }))
-    }
-    function notSendKeyBoardEvent(eventType: KeyBoardEventType, code: string) { }
-    if (collect) window.oneMouse.RTCSendKeyBoardEvent(sendKeyBoardEvent)
-    else window.oneMouse.RTCSendKeyBoardEvent(notSendKeyBoardEvent)
+    window.oneMouse.KeyBoardCollect(collect)
 }
 
 

@@ -136,6 +136,10 @@ function createClientVideoRTC(io: Socket): RTCPeerConnection {
         rtc.addIceCandidate(args)
     })
 
+    io.on(ServerVideo.ANSWER, (args) => {
+        rtc.setRemoteDescription(args)
+    })
+
     io.on(ServerVideo.OFFER, (args) => {
         console.log('video::Client accept Server offer!');
         rtc.setRemoteDescription(args)
@@ -145,10 +149,19 @@ function createClientVideoRTC(io: Socket): RTCPeerConnection {
         })
     })
 
+    io.on(Connection.NEW, () => {
+        if (rtc.connectionState === 'connected') return
+        console.log(`New client connected!`);
+        rtc.createOffer().then((offer) => {
+            rtc.setLocalDescription(offer)
+            io.emit(ClientVideo.OFFER, offer)
+        })
+    })
+
     return rtc
 }
 
-function createServerVideoRTC(io: Socket): RTCPeerConnection {
+function createServerVideoRTC(io: Socket, onmessage: (event: MessageEvent) => void): RTCPeerConnection {
     const rtc = new RTCPeerConnection(config)
 
     rtc.onconnectionstatechange = () => {
@@ -165,6 +178,11 @@ function createServerVideoRTC(io: Socket): RTCPeerConnection {
         }
     }
 
+    rtc.ondatachannel = (event) => {
+        const channel = event.channel
+        channel.onmessage = onmessage
+    }
+
     rtc.onicecandidate = ({ candidate }) => {
         if (candidate) {
             io.emit(ServerVideo.CANDIDATE, candidate)
@@ -176,16 +194,18 @@ function createServerVideoRTC(io: Socket): RTCPeerConnection {
         rtc.addIceCandidate(args)
     })
 
-    io.on(ClientVideo.ANSWER, (args) => {
+    io.on(ClientVideo.OFFER, (args) => {
+        console.log('video::Server accept client offer!');
         rtc.setRemoteDescription(args)
+        rtc.createAnswer().then((answer) => {
+            rtc.setLocalDescription(answer)
+            io.emit(ServerVideo.ANSWER, answer)
+        })
     })
 
-    io.on(Connection.NEW, () => {
-        console.log(`video::New client connected!`);
-        rtc.createOffer().then((offer) => {
-            rtc.setLocalDescription(offer)
-            io.emit(ServerVideo.OFFER, offer)
-        })
+    io.on(ClientVideo.ANSWER, (args) => {
+        console.log('video::Server accept client Answer!');
+        rtc.setRemoteDescription(args)
     })
 
     // onnegotiationneeded
