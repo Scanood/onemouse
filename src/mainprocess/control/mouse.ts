@@ -5,8 +5,7 @@ import { mouse, Point, Button } from '@scanood/nut-js'
 let timer: NodeJS.Timeout = undefined
 const Offset = 5
 const yTopOffset = 10
-let lastX: number = undefined
-let lastY: number = undefined
+
 function isValidArea(cx: number, cy: number, winx: number, winy: number, width: number, height: number) {
     if ((cx < (winx + width - Offset) && cx > winx + Offset) && (cy < (winy + height - Offset) && cy > winy + yTopOffset))
         return true
@@ -15,8 +14,6 @@ function isValidArea(cx: number, cy: number, winx: number, winy: number, width: 
 
 function CollectMousePosition(collect: boolean, win: number, mainWin: BrowserWindow) {
     if (collect) {
-        lastX = undefined
-        lastY = undefined
         timer = setInterval(() => {
             if (!win) return
             const viceWindow = BrowserWindow.fromId(win)
@@ -26,11 +23,7 @@ function CollectMousePosition(collect: boolean, win: number, mainWin: BrowserWin
             if (!isValidArea(cx, cy, winx, winy, width, height)) return
             const xnum = (cx - winx - Offset) / (width - 2 * Offset)
             const ynum = (cy - winy - yTopOffset) / (height - Offset - yTopOffset)
-            if (xnum != lastX && ynum != lastY) {
-                mainWin.webContents.send(EventType.MOUSE, xnum, ynum)
-                lastX = xnum
-                lastY = ynum
-            }
+            mainWin.webContents.send(EventType.MOUSE, xnum, ynum)
         }, 10)
 
     } else {
