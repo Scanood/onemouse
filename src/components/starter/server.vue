@@ -66,7 +66,6 @@ async function CatchDesktopVideo(data: ScreenData) {
         return
     }
     const { frameRate } = data
-    console.log("------", frameRate);
 
     if (frameRate) settingStore.updateFrameRate(frameRate)
     if (ServerVideoPeer.value && sourceId) {
