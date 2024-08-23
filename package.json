@@ -1,7 +1,7 @@
 {
   "name": "onemouse",
   "productName": "onemouse",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "一个内网远程控制工具",
   "main": ".vite/build/main.js",
   "scripts": {
