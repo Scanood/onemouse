@@ -2,6 +2,7 @@ import { BrowserWindow, screen } from 'electron'
 import { EventType, MouseData, ActionType, ActionKey } from './type'
 import { mouse, Point, Button } from '@scanood/nut-js'
 
+mouse.config.autoDelayMs = 5
 let timer: NodeJS.Timeout = undefined
 const Offset = 5
 const yTopOffset = 10
