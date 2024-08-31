@@ -70,15 +70,10 @@ async function CatchDesktopVideo(data: ScreenData) {
     if (frameRate) settingStore.updateFrameRate(frameRate)
     if (ServerVideoPeer.value && sourceId) {
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({
-                audio: false,
+            const stream = await navigator.mediaDevices.getDisplayMedia({
+                audio: true,
                 video: {
-                    // @ts-ignore
-                    mandatory: {
-                        chromeMediaSource: 'desktop',
-                        chromeMediaSourceId: sourceId,
-                        maxFrameRate: Number.parseInt(settingStore.frameRate)
-                    }
+                    frameRate: Number.parseInt(settingStore.frameRate)
                 }
             })
             streams = stream
