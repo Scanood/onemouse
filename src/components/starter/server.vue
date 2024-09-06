@@ -3,6 +3,7 @@
         <div style="margin-bottom:1em;">
             <label for="connect-link">本机地址：</label>
             <InputText type="text" id="connect-link" :disabled="!manualIP" v-model="connectLink" style="width: 10em;" />
+            <Button icon="pi pi-sync" style="margin-left: 5px;" text rounded @click="getServerIP" />
         </div>
         <div>
             <label for="connect-link">连接密码：</label>
@@ -38,14 +39,18 @@ const { ServerVideoPeer } = storeToRefs(store)
 let send: RTCRtpSender = undefined
 let streams: MediaStream = undefined
 
-onMounted(async () => {
-    if (props.mode != WorkMode.SERVER) return
+async function getServerIP() {
     const ip = await window.oneMouse.GetLocalIP()
     if (ip == undefined) {
         manualIP.value = true
         props.toast.add({ severity: 'warn', summary: '系统提示', detail: '请手动设置本机IP！', life: 2000 })
     }
     connectLink.value = ip
+}
+
+onMounted(async () => {
+    if (props.mode != WorkMode.SERVER) return
+    await getServerIP()
     window.oneMouse.ServerPortInuse(onServerPortinUse)
     if (startup.value) Start()
 })
