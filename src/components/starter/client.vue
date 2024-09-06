@@ -1,6 +1,6 @@
 <template>
     <div style="margin-bottom:1em;">
-        <label for="connect-link">服务地址：</label>
+        <label for="connect-link">远程地址：</label>
         <InputText type="text" id="connect-link" v-model="connectClientLink" style="width: 10em;"
             :disabled="status != StartStatus.STOP" />
     </div>
