@@ -1,13 +1,15 @@
 <template>
-    <div style="margin-bottom:1em;">
-        <label for="connect-link">远程地址：</label>
-        <InputText type="text" id="connect-link" v-model="connectClientLink" style="width: 10em;"
-            :disabled="status != StartStatus.STOP" />
-    </div>
-    <div>
-        <label for="connect-link">连接密码：</label>
-        <InputText type="text" id="connect-link" v-model="connectClientPassword" style="width: 10em;"
-            :disabled="status != StartStatus.STOP" />
+    <div style="text-align: center;">
+        <div style="margin-bottom:1em;">
+            <label for="connect-link">远程地址：</label>
+            <InputText type="text" id="connect-link" v-model="connectClientLink" style="width: 10em;"
+                :disabled="status != StartStatus.STOP" />
+        </div>
+        <div>
+            <label for="connect-link">连接密码：</label>
+            <InputText type="text" id="connect-link" v-model="connectClientPassword" style="width: 10em;"
+                :disabled="status != StartStatus.STOP" />
+        </div>
     </div>
     <div class="buttons">
         <Button label="启动" v-show="status == StartStatus.STOP" @click="Start" />

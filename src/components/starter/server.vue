@@ -1,14 +1,19 @@
 <template>
     <div>
-        <div style="margin-bottom:1em;">
-            <label for="connect-link">本机地址：</label>
-            <InputText type="text" id="connect-link" :disabled="!manualIP" v-model="connectLink" style="width: 10em;" />
-            <Button icon="pi pi-sync" style="margin-left: 5px;" text rounded @click="getServerIP" />
-        </div>
-        <div>
-            <label for="connect-link">连接密码：</label>
-            <InputText type="text" id="connect-link" :disabled="status != StartStatus.STOP" v-model="connectPassword"
-                style="width: 10em;" />
+        <div style="display: flex;justify-content: center;">
+            <div>
+                <div style="margin-bottom:1em;">
+                    <label for="connect-link">本机地址：</label>
+                    <InputText type="text" id="connect-link" :disabled="!manualIP" v-model="connectLink"
+                        style="width: 10em;" />
+                    <Button icon="pi pi-sync" style="margin-left: 5px;" text rounded @click="getServerIP" />
+                </div>
+                <div>
+                    <label for="connect-link">连接密码：</label>
+                    <InputText type="text" id="connect-link" :disabled="status != StartStatus.STOP"
+                        v-model="connectPassword" style="width: 10em;" />
+                </div>
+            </div>
         </div>
         <div class="buttons">
             <Button label="启动" v-show="status == StartStatus.STOP" @click="Start" />
@@ -22,14 +27,13 @@ import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import { EventType } from '../controller/type'
 import { StartStatus, RTCdata, MouseData, ScreenData, MouseEventData, KeyBoardData } from './types'
-import { WorkMode } from '../mode/type'
 import { ServerConnect, CloseSocketIO, ServerVideoConnect } from '../../mainprocess/connection/connect'
 import { ref, onMounted, watch } from 'vue'
 import { usePeerStore } from '../../store/index'
 import { storeToRefs } from 'pinia'
 import { useSettingStore } from '../../store/setting'
 
-const props = defineProps(['mode', 'status', 'SetStatus', 'toast'])
+const props = defineProps(['status', 'SetStatus', 'toast'])
 const connectLink = ref("")
 const manualIP = ref(false)
 const store = usePeerStore()
@@ -48,9 +52,8 @@ async function getServerIP() {
     connectLink.value = ip
 }
 
-onMounted(async () => {
-    if (props.mode != WorkMode.SERVER) return
-    await getServerIP()
+onMounted(() => {
+    getServerIP()
     window.oneMouse.ServerPortInuse(onServerPortinUse)
     if (startup.value) Start()
 })

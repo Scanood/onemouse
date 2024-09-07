@@ -2,7 +2,7 @@
     <Nav v-show="!hideNav" />
     <router-view v-slot="{ Component }">
         <keep-alive>
-            <component :is="Component" />
+            <component :is="Component" style="min-width: 650px;" />
         </keep-alive>
     </router-view>
 </template>

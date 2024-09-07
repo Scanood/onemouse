@@ -1,29 +1,52 @@
 <template>
     <div>
-        <Mode :mode="mode" :setMode="setMode" :disabled="status == StartStatus.RUNNING" class="index-panel" />
-        <Starter :mode="mode" :status="status" :SetStatus="SetStatus" :setChannel="setChannel" :setWin="setWin" />
-        <Controller :hide="mode == WorkMode.SERVER" :collectEvent="collectEvent" />
+        <Tabs value="0">
+            <div class="tabs">
+                <TabList>
+                    <Tab value="0" :disabled="status === StartStatus.RUNNING" class="tab">
+                        服务器
+                    </Tab>
+                    <Tab value="1" :disabled="status === StartStatus.RUNNING" class="tab">
+                        客户端
+                    </Tab>
+                </TabList>
+            </div>
+            <TabPanels>
+                <TabPanel value="0">
+                    <server :toast="toast" :status="status" :SetStatus="SetStatus" />
+                </TabPanel>
+                <TabPanel value="1">
+                    <client :toast="toast" :setWin="setWin" :setChannel="setChannel" :status="status" :SetStatus="SetStatus" />
+                    <Controller :collectEvent="collectEvent" />
+                </TabPanel>
+            </TabPanels>
+        </Tabs>
+        <Toast position="bottom-right" />
     </div>
 </template>
 <script setup lang="ts">
-import Mode from '../components/mode/index.vue'
-import useMode from '../components/mode/useMode'
-import Starter from '../components/starter/index.vue'
-import useStarter from '../components/starter/useStarter';
-import { StartStatus } from '../components/starter/types';
-import { WorkMode } from '../components/mode/type'
 import { EventType, ActionType, ActionKey } from '../components/controller/type'
 import Controller from '../components/controller/index.vue'
 import { taskManger } from '../utils/task'
 import { useSettingStore } from '../store/setting'
-const { mode, setMode } = useMode()
+import server from '../components/starter/server.vue'
+import client from '../components/starter/client.vue'
+import Tabs from 'primevue/tabs';
+import TabList from 'primevue/tablist';
+import Tab from 'primevue/tab';
+import TabPanels from 'primevue/tabpanels';
+import TabPanel from 'primevue/tabpanel';
+import { useToast } from "primevue/usetoast";
+import Toast from 'primevue/toast';
+import useStarter from '../components/starter/useStarter'
+import { StartStatus } from '../components/starter/types'
 const { status, SetStatus } = useStarter()
 const settingStore = useSettingStore()
 import { ref, watch, onMounted } from 'vue'
 let channel: RTCDataChannel
 // viceWindow ID
 let newWin = ref()
-
+const toast = useToast()
 onMounted(() => {
     mountedMouseEvent(false)
     mountedKeyBoardEvent(false)
@@ -90,5 +113,16 @@ watch(newWin, (newValue, _) => {
 <style scoped>
 .index-panel {
     margin-top: 1em;
+}
+
+.tab {
+    width: 50%;
+}
+
+.tabs {
+    width: 70%;
+    margin: auto;
+    margin-top: 2em;
+    margin-bottom: 1em;
 }
 </style>

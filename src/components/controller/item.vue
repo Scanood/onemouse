@@ -1,12 +1,12 @@
 <template>
     <div class="control-item">
         <div>{{ title }}</div>
-        <InputSwitch @update:model-value="ChangeValue" :model-value="checked" />
+        <ToggleSwitch @update:model-value="ChangeValue" :model-value="checked" />
     </div>
 </template>
 
 <script setup lang="ts">
-import InputSwitch from 'primevue/inputswitch';
+import ToggleSwitch from 'primevue/toggleswitch';
 const props = defineProps(['checked', 'setchecked', 'title'])
 
 function ChangeValue(value: Boolean) {

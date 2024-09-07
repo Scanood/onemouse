@@ -1,18 +1,23 @@
 <template>
-    <div v-if="!hide" class="control-panel">
-        <CheckItem title="鼠标" :checked="mouse" :setchecked="setMouse" />
-        <CheckItem title="键盘" :checked="keyboard" :setchecked="setKeyboard" />
-        <CheckItem title="屏幕" :checked="screen" :setchecked="setScreen" />
+    <div class="control-panel">
+        <Panel header="操作选项" style="width: 50%;" toggleable>
+            <div style="display: flex;justify-content: center;">
+                <CheckItem title="鼠标" :checked="mouse" :setchecked="setMouse" />
+                <CheckItem title="键盘" :checked="keyboard" :setchecked="setKeyboard" />
+                <CheckItem title="屏幕" :checked="screen" :setchecked="setScreen" />
+            </div>
+        </Panel>
     </div>
 </template>
 
 <script setup lang="ts">
 import CheckItem from './item.vue'
-const props = defineProps(['hide', 'collectEvent'])
+const props = defineProps(['collectEvent'])
 import useValue from './useChecked'
 import { EventType } from './type'
 import { onMounted, watch, } from 'vue'
 import { e } from '../../utils/event'
+import Panel from 'primevue/panel';
 const [mouse, setMouse] = useValue()
 const [keyboard, setKeyboard] = useValue()
 const [screen, setScreen] = useValue()
