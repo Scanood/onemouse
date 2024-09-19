@@ -1,4 +1,4 @@
-import { BrowserWindow, screen } from 'electron'
+import { BrowserWindow, screen, app } from 'electron'
 import { EventType, MouseData, ActionType, ActionKey } from './type'
 import { mouse, Point, Button } from '@scanood/nut-js'
 
@@ -6,6 +6,17 @@ mouse.config.autoDelayMs = 5
 let timer: NodeJS.Timeout = undefined
 const Offset = 5
 const yTopOffset = 10
+
+let width = 0
+let height = 0
+let scaleFactor = 1
+
+app.on('ready', () => {
+    const size = screen.getPrimaryDisplay().size
+    width = size.width
+    height = size.height
+    scaleFactor = screen.getPrimaryDisplay().scaleFactor
+})
 
 function isValidArea(cx: number, cy: number, winx: number, winy: number, width: number, height: number) {
     if ((cx < (winx + width - Offset) && cx > winx + Offset) && (cy < (winy + height - Offset) && cy > winy + yTopOffset))
@@ -41,8 +52,7 @@ function sendMouseAction(mainWin: BrowserWindow, actionType: ActionType, actionK
 // server side
 async function mouseAction(data: MouseData) {
     const { x, y } = data
-    const { width, height } = screen.getPrimaryDisplay().size
-    const point = new Point(x * width, y * height)
+    const point = new Point(x * width * scaleFactor, y * height * scaleFactor)
     await mouse.move([point])
 }
 
