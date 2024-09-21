@@ -2,7 +2,7 @@ import { BrowserWindow, screen, app } from 'electron'
 import { EventType, MouseData, ActionType, ActionKey } from './type'
 import { mouse, Point, Button } from '@scanood/nut-js'
 
-mouse.config.autoDelayMs = 5
+// mouse.config.autoDelayMs = 5
 let timer: NodeJS.Timeout = undefined
 const Offset = 5
 const yTopOffset = 10
@@ -53,7 +53,7 @@ function sendMouseAction(mainWin: BrowserWindow, actionType: ActionType, actionK
 async function mouseAction(data: MouseData) {
     const { x, y } = data
     const point = new Point(x * width * scaleFactor, y * height * scaleFactor)
-    await mouse.move([point])
+    await mouse.setPosition(point)
 }
 
 function convertEnum(actionKey: ActionKey): Button {
