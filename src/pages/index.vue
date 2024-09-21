@@ -113,12 +113,14 @@ function collectEvent(eventType: string, collect: boolean) {
 
 // run task 在连接建立之前设置的控制任务
 watch(newWin, (newValue, _) => {
-    if (newValue && taskManger.tasks.length > 0) {
-        taskManger.tasks.forEach(({ eventType, collect }) => {
-            RunTask(eventType, collect)
-        })
-        taskManger.clear()
-    }
+    setTimeout(() => {
+        if (newValue && taskManger.tasks.length > 0) {
+            taskManger.tasks.forEach(({ eventType, collect }) => {
+                RunTask(eventType, collect)
+            })
+            taskManger.clear()
+        }
+    }, 1500)
 })
 
 </script>
