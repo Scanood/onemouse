@@ -16,7 +16,8 @@
                     <server :toast="toast" :status="status" :SetStatus="SetStatus" />
                 </TabPanel>
                 <TabPanel value="1">
-                    <client :toast="toast" :setWin="setWin" :setChannel="setChannel" :status="status" :SetStatus="SetStatus" />
+                    <client :toast="toast" :setWin="setWin" :setChannel="setChannel" :status="status"
+                        :SetStatus="SetStatus" />
                     <Controller :collectEvent="collectEvent" />
                 </TabPanel>
             </TabPanels>
@@ -80,11 +81,23 @@ function mountedKeyBoardEvent(collect: boolean) {
 }
 
 
+
+function screenEvent(eventType: string, collect: boolean) {
+    if (channel) {
+        const data = {
+            open: collect,
+            frameRate: settingStore.frameRate,
+            audio: settingStore.audio
+        }
+        channel.send(JSON.stringify({ type: eventType, data }))
+    }
+}
+
 function RunTask(eventType: string, collect: boolean) {
     switch (eventType) {
         case EventType.MOUSE: mountedMouseEvent(collect); break;
         case EventType.KEYBOARD: mountedKeyBoardEvent(collect); break;
-        case EventType.SCREEN: if (channel) channel.send(JSON.stringify({ type: eventType, data: { open: collect, frameRate: settingStore.frameRate } })); break
+        case EventType.SCREEN: screenEvent(eventType, collect); break
     }
 }
 

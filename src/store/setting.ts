@@ -5,7 +5,8 @@ export const useSettingStore = defineStore('setting', {
         port: 9527,
         startup: false,
         connectPassword: 1234,
-        frameRate: '30'
+        frameRate: '30',
+        audio: false,
     }),
     actions: {
         updateFrameRate(frameRate: string) {
@@ -14,6 +15,6 @@ export const useSettingStore = defineStore('setting', {
     },
     persist: {
         storage: localStorage,
-        paths: ['port', 'startup', 'connectPassword', 'frameRate']
+        paths: ['port', 'startup', 'connectPassword', 'frameRate', 'audio']
     },
 })
