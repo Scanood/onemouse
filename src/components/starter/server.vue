@@ -39,7 +39,7 @@ const manualIP = ref(false)
 const store = usePeerStore()
 const settingStore = useSettingStore()
 const { port, startup, connectPassword } = storeToRefs(settingStore)
-const { ServerVideoPeer,updateServerPeer } = storeToRefs(store)
+const { ServerVideoPeer } = storeToRefs(store)
 let send: RTCRtpSender = undefined
 let streams: MediaStream = undefined
 
@@ -121,7 +121,7 @@ function Stop() {
     window.oneMouse.StopServer()
     CloseSocketIO()
     ServerVideoPeer.value.close()
-    updateServerPeer(undefined)
+    ServerVideoPeer.value = undefined
     props.SetStatus(StartStatus.STOP)
 }
 
