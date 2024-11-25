@@ -61,7 +61,12 @@ const mapping = {
   ServerPortInuse: (callback: () => void) => {
     ipcRenderer.removeAllListeners('server-port-inuse')
     ipcRenderer.on('server-port-inuse', () => callback())
-  }
+  },
+  // 最小化
+  hideWin:()=>ipcRenderer.send('hide-win'),
+
+  //退出软件
+  closewin:()=>ipcRenderer.send('close-win')
 }
 
 contextBridge.exposeInMainWorld('oneMouse', mapping)

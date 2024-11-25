@@ -21,6 +21,13 @@ function InitProcess(mainWin: BrowserWindow) {
         ipcMain.on('close-window', (event, win: number) => {
             CloseWindow(win)
         })
+
+        ipcMain.on('hide-win',()=>{
+            mainWin.hide()
+        })
+        ipcMain.on('close-win',()=>{
+            mainWin.close()
+        })
     })
 }
 export {

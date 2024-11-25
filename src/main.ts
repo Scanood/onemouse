@@ -16,6 +16,7 @@ const createWindow = () => {
     height: 600,
     icon: 'images/logo.png',
     show: false,
+    frame:false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },

@@ -1,4 +1,5 @@
 <template>
+    <Header />
     <Nav v-show="!hideNav" />
     <router-view v-slot="{ Component }">
         <keep-alive>
@@ -9,6 +10,7 @@
 
 <script setup>
 import Nav from './components/nav/index.vue'
+import Header from './components/header/index.vue'
 import { useRoute } from 'vue-router'
 import { ref, watch } from 'vue'
 const route = useRoute()

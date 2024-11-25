@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Index from '../pages/index.vue'
+
 const router = createRouter({
     history: createWebHashHistory(),
     routes: [
@@ -28,13 +29,6 @@ const router = createRouter({
             }
         }
     ]
-})
-
-router.beforeEach((to, from, next) => {
-    if (to.meta.title) {
-        document.title = to.meta.title as string
-    }
-    next()
 })
 
 export default router
