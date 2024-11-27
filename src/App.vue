@@ -1,5 +1,5 @@
 <template>
-    <Header />
+    <Header v-show="!hideNav" />
     <Nav v-show="!hideNav" />
     <router-view v-slot="{ Component }">
         <keep-alive>
