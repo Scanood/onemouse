@@ -37,6 +37,7 @@ const close = () => {
     -webkit-app-region: drag;
     display: flex;
     justify-content: space-between;
+    color: rgb(105, 98, 139);
 }
 
 .opt {
